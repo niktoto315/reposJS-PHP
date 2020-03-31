@@ -1,0 +1,440 @@
+<html>
+	<head>
+		<title>Space N Vaders Game</title>
+	</head>
+	<body>
+		<h1>Space N Vaders</h1>
+		<canvas id="canvas" width="600" height="400"></canvas>
+		<script type="text/javascript" src='gamecore.js'></script>
+		
+		<script language="JavaScript">
+			var can = document.getElementById("canvas");
+			var c = can.getContext('2d');
+			var timer;
+			var gameTimer;
+			var time = 300;
+			var mnt = 0, scnd = 0;
+			var timeout = false;
+			var plimg = 2;
+			
+			var Menu = [];
+			
+			var PictBox = {
+				x: 260,
+				y: 200,
+				w: 50,
+				h: 50,
+				img: 1,
+				draw: function(){
+					switch(this.img){
+						case 0: c.drawImage(ship_image[this.img], 1, 1, 23, 23, this.x, this.y, this.w*2, this.h*2); break;
+						case 1: c.drawImage(ship_image[this.img], 25, 1, 23, 23, this.x, this.y, this.w*2, this.h*2); break;
+						case 2: c.drawImage(ship_image[this.img], 49, 1, 23, 23, this.x, this.y, this.w*2, this.h*2); break;
+					}
+				},
+			};
+			
+			var btnHelp = {
+				text: 'Как играть',
+				w: 75,
+				h: 50,
+				x: 0,
+				y: 0,
+				state: 'default',
+				draw: function(){
+					c.font = '20px Arial';
+					this.x = can.width-this.w-50;
+					this.y = can.height-this.h-10;
+					switch(this.state){
+						case 'over':
+							c.fillStyle = "white";
+							c.fillText(this.text+'?',this.x+this.w/2-c.measureText(this.text+'?').width/2,this.y+this.h/2+10);
+						break;
+						default:
+							c.fillStyle = "gray";
+							c.fillText(this.text,this.x+this.w/2-c.measureText(this.text).width/2,this.y+this.h/2+10);
+						break;
+					}
+				}
+			};
+			
+			var btnStart = {
+				text: 'Начать',
+				w: 85,
+				h: 40,
+				x: 275,
+				y: 140,
+				state: 'default',
+				draw: function(){
+					c.font = '20px Arial';
+					switch(this.state){
+						case 'over':
+							c.fillStyle = "white";
+							c.fillText(this.text+'?',this.x+this.w/2-c.measureText(this.text+'?').width/2,this.y+this.h/2+10);
+						break;
+						default:
+							c.fillStyle = "gray";
+							c.fillText(this.text,this.x+this.w/2-c.measureText(this.text).width/2,this.y+this.h/2+10);
+						break;
+					}
+				}
+			};
+			
+			player.width = 46;
+			player.height = 46;
+
+			var ship_image = [];
+			var bomb_image;
+			var bullet_image;
+			loadResources();
+			
+			function loadResources() {
+				ship_image[0] = new Image(); //1,1,23,23
+				ship_image[0].src = "img/ship.bmp";
+				ship_image[1] = new Image(); //25,1,23,23
+				ship_image[1].src = "img/ship1.bmp";
+				ship_image[2] = new Image(); //50,1,23,23
+				ship_image[2].src = "img/ship2.bmp";
+				bomb_image = new Image();
+				bomb_image.src = "img/bomb.png";
+				bullet_image = new Image();
+				bullet_image.src = "img/bullets.png";
+			}
+
+			function gametime(){
+				if(game.state == 'won' || game.state == 'over')return;
+				if(time == 0) { 
+					timeout = true;
+					player.state = "hit";
+					return;
+				}
+				time--;
+				mnt = time/60;
+				mnt = mnt - (mnt%1);
+				scnd = time - mnt*60;
+			}
+
+			function GameLoop(){
+				updateGame();
+				MainMenu();
+			}
+
+			function mainLoop() {
+				var c = can.getContext('2d');
+				updateBackground();
+				updateEnemies();
+				updatePlayer();
+				updatePlayerBullets();
+				updateEnemyBullets();
+				checkCollisions();				
+				drawBackground(c);
+				drawInfo(c);
+				drawEnemies(c);
+				drawPlayer(c);
+				drawEnemyBullets(c);
+				drawPlayerBullets(c);
+				drawOverlay(c);
+			}
+
+			// =========== player ============
+			function firePlayerBullet() {
+				//create a new bullet
+				playerBullets.push({
+				x: player.x,
+				x: player.x+14,
+				y: player.y-5,
+				width:10,
+				height:10,
+				width:20,
+				height:20,
+				counter:0,
+				});
+			}
+
+			function drawPlayer(c) {
+				if(player.state == "dead") return;
+				if(player.state == "hit") {
+					drawPlayerExplosion(c);
+					return;
+				}
+				
+				switch(plimg){
+					case 0: c.drawImage(ship_image[plimg], 1, 1, 23, 23, player.x, player.y, player.width, player.height); break;
+					case 1: c.drawImage(ship_image[plimg], 25, 1, 23, 23, player.x, player.y, player.width, player.height); break;
+					case 2: c.drawImage(ship_image[plimg], 50, 1, 23, 23, player.x, player.y, player.width, player.height); break;
+				}
+			}
+
+			var particles = [];
+			function drawPlayerExplosion(c) {
+				if(player.counter == 0) {
+					particles = [];
+					for(var i = 0; i<50; i++) {
+						particles.push({
+							x: player.x + player.width/2,
+							y: player.y + player.height/2,
+							xv: (Math.random()-0.5)*2.0*5.0,
+							yv: (Math.random()-0.5)*2.0*5.0,
+							age: 0,
+						});
+					}
+				}
+				if(player.counter > 0) {
+					for(var i=0; i<particles.length; i++) {
+						var p = particles[i];
+						p.x += p.xv;
+						p.y += p.yv;
+						var v = 255-p.age*3;
+						c.fillStyle = "rgb("+v+","+v+","+v+")";
+						c.fillRect(p.x,p.y,3,3);
+						p.age++;
+					}
+				}
+			};
+
+			function drawPlayerBullets(c) {
+				c.fillStyle = "blue";
+				for(i in playerBullets) {
+				var bullet = playerBullets[i];
+				var count = Math.floor(bullet.counter/4);
+				var xoff = (count%4)*24;
+				c.drawImage(
+					bullet_image,
+					xoff+10,0+9,8,8,
+					bullet.x,bullet.y,bullet.width,bullet.height
+					);
+				}
+			}
+
+			// =========== background ============
+			function drawBackground(c) {
+				c.fillStyle = "black";
+				c.fillRect(0,0,can.width,can.height);
+			}
+			
+			function drawInstroction(c){
+				var c = can.getContext('2d');
+				drawBackground(c);
+				c.fillStyle = 'white';
+				c.font = "14pt Arial";
+				let arr = menu.instruction.split('\n');
+				let arry = 30;
+				for(let i of arr){
+					c.fillText(i, 20, arry);
+					arry+=20;
+				}
+				btnHelp.text = 'Выход';
+				btnHelp.draw();
+			}
+			
+			function drawInfo(c){
+				c.font = "15px Arial";
+				c.fillStyle = "white";
+				c.fillText("Жизни x"+player.lives, 500, 15);
+				c.fillText("Очки: "+player.score, 500, 35);
+				c.fillText(mnt + ':' + scnd, 15, 15);
+				c.fillText('Для паузы нажмите Escape', 15, 380);
+				c.fillText('level = '+game.level, 150, 15);
+			}
+
+			// =========== enemies ===============
+			function drawEnemies(c) {
+				for(var i in enemies) {
+					var enemy = enemies[i];
+					if(enemy.state == "alive") {
+						c.fillStyle = "green";
+						drawEnemy(c,enemy,15);
+					}
+					if(enemy.state == "hit") {
+						c.fillStyle = "purple";
+						enemy.shrink--;
+						drawEnemy(c,enemy,enemy.shrink);
+					}
+					if(enemy.state == "dead") {
+						c.fillStyle = "black";
+						c.drawEnemy(c,enemy,15);
+					}
+				}
+			}
+
+			function drawEnemy(c,enemy,radius) {
+				if(radius <=0) radius = 1;
+					var theta = enemy.counter;
+					c.save();
+					c.translate(0,30);
+					circlePath(c, enemy.x, enemy.y, radius*2);
+					c.fill();
+				for(var i=0; i<10; i++) {
+					var xoff = Math.sin(toRadians(theta+i*36*2))*radius;
+					var yoff = Math.sin(toRadians(theta+i*36*1.5))*radius;
+					circlePath(c, enemy.x + xoff, enemy.y + yoff, 3);
+					c.fillStyle = "white";
+					c.fill();
+				}
+					c.restore();
+			} 
+			
+			function toRadians(d) {
+				return d * Math.PI * 2.0 / 360.0;
+			}
+			
+			function circlePath(c, x, y, r) {
+				c.beginPath();
+				c.moveTo(x,y);
+				c.arc(x,y, r, 0, Math.PI*2);
+			}
+
+			function createEnemyBullet(enemy) {
+				return {
+					x:enemy.x,
+					y:enemy.y+enemy.height,
+					width:4,
+					height:12,
+					width:30,
+					height:30,
+					counter:0,
+				}
+			}
+
+			function drawEnemyBullets(c) {
+				for(var i in enemyBullets) {
+					var bullet = enemyBullets[i];
+					var xoff = (bullet.counter%9)*12 + 1;
+					var yoff = 1;
+					c.drawImage(bomb_image,
+						xoff,yoff,11,11,
+						bullet.x,bullet.y,bullet.width,bullet.height
+					);
+				}
+			}
+
+			// =========== overlay ===============
+			function drawOverlay(c) {
+				if(overlay.counter == -1)return;
+				// появление
+				var alpha = overlay.counter/50.0;
+				if(alpha > 1) alpha = 1;
+				c.globalAlpha = alpha;
+ 				c.save();
+				c.fillStyle = "white";
+				c.font = "Bold 30pt Arial";
+				c.fillText(overlay.title, overlay.x, overlay.y);
+				c.font = "14pt Arial";
+				c.fillText(overlay.subtitle, overlay.subx, overlay.suby);
+				c.restore();
+				if(overlay.counter >= 45)Ends();
+			}
+  
+			function CheckMouse(x,y,obj){
+				return x >= obj.x && x <= obj.x + obj.w && y >= obj.y && y <= obj.y + obj.h;
+			}
+
+			function Start(){
+				if(menu.counter == -1)return;
+				menu.counter = -1;
+				
+				playerBullets = [];
+				enemyBullets = [];
+				
+				game.level++;
+				game.state = 'start';
+				
+				overlay.counter = -1;
+				
+				player.state = 'alive';
+				
+				time = 300;
+				plimg = PictBox.img;
+				
+				timer = setInterval(mainLoop,1000/30);
+				gameTimer = setInterval(gametime, 1000);
+			}
+			
+			function Pause(){
+				if(game.state == 'playing'){
+					clearInterval(gameTimer);
+					clearInterval(timer);
+					game.state = 'pause';
+				
+					c.fillStyle = "white";
+					c.font = "Bold 30pt Arial";
+					c.fillText('Игра остановлена',140,200);
+					c.font = "14pt Arial";
+					c.fillText('нажиите Enter для продолжения', 170,250);
+					c.font = "15px Arial";
+					c.fillText('Для выхода в меню нажмите M', 350, 380);
+					return;
+				}
+				if(game.state == 'pause'){
+					timer = setInterval(mainLoop,1000/30);
+					gameTimer = setInterval(gametime, 1000);
+					game.state = 'playing';
+					return;				
+				}
+			}
+			
+			function Ends(){
+				clearInterval(gameTimer);
+				clearInterval(timer);
+				game.state = enemies.length == 0 ? 'won' : 'over';
+				plimg = PictBox.img;
+			}
+			
+			function MainMenu(c){
+				if(menu.counter == -1)return;
+				if(menu.counter == 2) { drawInstroction();return; }
+				btnHelp.text = 'Как играть';
+				
+				var c = can.getContext('2d');
+				drawBackground(c);
+				drawEnemies(c);
+				drawPlayer(c);
+				drawEnemyBullets(c);
+				drawPlayerBullets(c);
+				
+				c.fillStyle = 'white';
+				c.font = "Bold 50pt Arial";
+				c.fillText(menu.gamename,120,100);
+				
+				btnStart.draw();
+				btnHelp.draw();
+				PictBox.draw();
+				
+				can.addEventListener("mousedown",function(e){
+					if(CheckMouse(e.offsetX,e.offsetY,btnStart)){
+						Start();
+					}
+					if(CheckMouse(e.offsetX,e.offsetY,btnHelp))menu.counter = btnHelp.text == 'Выход' ? 0 : 2;
+				},false);
+				can.addEventListener("mousemove",function(e){
+					btnStart.state = CheckMouse(e.offsetX,e.offsetY,btnStart) ? "over" : "default";
+					btnHelp.state = CheckMouse(e.offsetX,e.offsetY,btnHelp) ? "over" : "default";
+				},false);
+			}
+			
+			setInterval(GameLoop,1000/30);
+			doSetup();
+</script>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
