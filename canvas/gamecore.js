@@ -59,7 +59,7 @@ function updateGame() {
     }
     if(game.state == "over" && keyboard[32] && overlay.counter >= 45) {
 		menu.counter = 0;
-		game.level = 1;
+		game.level = 0;
 		game.EnemyCount = 0;
 		player.score = 0;
 		player.lives = 3;
