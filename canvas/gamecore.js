@@ -82,6 +82,7 @@ function updateGame() {
     if(game.state == "pause" && keyboard[77]) {
 		menu.counter = 0;
 	    	game.level = 0;
+	    	game.EnemyCount = 0;
     }
     if(overlay.counter >= 0) {
         overlay.counter++;
