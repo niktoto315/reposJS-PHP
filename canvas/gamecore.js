@@ -51,10 +51,10 @@ player.counter=-1;
 function updateGame() {
     if(game.state == "playing" && enemies.length == 0) {
         game.state = "won";
-        overlay.title = "Пришельцы мертвы";
+        overlay.title = "Уровень пройден";
 		overlay.subtitle = "для продолжения нажмите пробел";
-        overlay.counter = 0;
-		overlay.x = 120; overlay.y = 200;
+        	overlay.counter = 0;
+		overlay.x = 140; overlay.y = 200;
 		overlay.subx = 170; overlay.suby = 250;
     }
     if(game.state == "over" && keyboard[32] && overlay.counter >= 45) {
