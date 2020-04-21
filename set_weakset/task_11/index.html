@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title>set/weakset</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<p>1</p>
+	<p>2</p>
+	<p>3</p>
+	<p>4</p>
+	<p>5</p>
+	<input type='button' value='Run'>
+	<style>
+		p{
+			width: 100px;
+			border: 1px solid black;
+		}
+	</style>
+    <script type="text/javascript">
+		let set = new Set();
+		
+		let p = document.querySelectorAll('p');
+		for(let i of p){
+			i.addEventListener('click', function(){
+				set.add(i);
+			});
+		}
+		
+		document.querySelector('input[type=button]').addEventListener('click', function(){
+			for(let i of set){
+				i.innerHTML += '!';
+			}
+			
+			set.clear();
+		});
+	</script>
+</body>
+</html>

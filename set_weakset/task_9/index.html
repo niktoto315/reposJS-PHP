@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>set/weakset</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div>
+		<input type='text' value='1' style='width:200px'>
+		<input type='button' value='Добавить'>
+	</div>
+	<div id='d2'><p></p></div>
+    <script type="text/javascript">
+		let text = document.querySelector('input[type=text]');
+		let set = new Set();
+		console.log();
+		
+		document.querySelector('input[type=button]').addEventListener('click', function(){
+			let p = document.querySelector('#d2 p');
+			if(!set.has(text.value))p.innerHTML += text.value + ', ';
+			set.add(text.value);
+		});
+	</script>
+</body>
+</html>

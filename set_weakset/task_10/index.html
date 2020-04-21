@@ -1,0 +1,18 @@
+<html>
+<head>
+    <title>set/weakset</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <script type="text/javascript">
+		let set = new Set();
+		let arr = [1, 1, 2, 2, 3, 4, 5, 2, 1];
+		console.log(uni(arr));
+		
+		function uni(mas){
+			//return [...new Set(mas)];
+			return Array.from(new Set(mas));
+		}
+	</script>
+</body>
+</html>
