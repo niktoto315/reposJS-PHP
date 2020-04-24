@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id='app'>
+		<button v-on:click='click()'>Нажми, если сможешь</button>
+		<p>{{ rawHtml }}</p>
+		<p v-html='rawHtml'></p>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data:{
+				rawHtml: '',
+				text: '<span style="color:red">Я текст, текстом быть лучше чем Vue</span>',
+			},
+			methods:{
+				click: function(){
+					this.rawHtml = this.text;
+				},
+			}
+		});
+	</script>
+</body>
+</html>

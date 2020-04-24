@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id="app">
+		<button style='width:150px;height:30px;' v-on:click='click()'>{{ show ? 'Click me' : 'Don`t click me'}}</button>
+		<template v-if='show'>
+			<p>Уже</p>
+			<p>пора</p>
+			<p>в дурку</p>
+		</template>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data: {
+				age: 25,
+				show: true,
+			},
+			methods:
+			{
+				click: function()
+				{
+					this.show = !this.show;
+				},
+			},
+		});
+	</script>
+</body>
+</html>

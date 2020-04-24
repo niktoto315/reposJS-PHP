@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id='app'>
+		<a v-on:click.left='clickl("left")' v-on:click.right='clickr("right")' v-on:click.middle='clickm("middle")' href=''>ChemYaZanimaus`?</a> 
+		<p>{{ text }}</p>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data:{
+				text: 'left',
+			},
+			methods:{
+				clickl(mess){
+					this.text = mess;
+				},
+				clickr(mess){
+					this.text = mess;
+				},
+				clickm(mess){
+					this.text = mess;
+				},
+			}
+		});
+		//console.log(v-on:click);
+	</script>
+</body>
+</html>

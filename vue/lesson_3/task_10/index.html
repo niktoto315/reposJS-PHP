@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id="app">
+		<ul>
+			<template v-for="index, item in items">
+				<li>{{ index }}</li>
+				<li>{{ item+1 }}</li>
+				<li :class='classes[0]'>{{ divider }}</li>
+			</template>
+		</ul>
+	</div>
+	<style>
+		.divider{
+			list-style-type: square;
+			background: lightgrey;
+		}
+	</style>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data: {
+				items: ['a', 'b', 'c', 'd', 'e'],
+				classes: ['divider']
+			},
+		});
+	</script>
+</body>
+</html>

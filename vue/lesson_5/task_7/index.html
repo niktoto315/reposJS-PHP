@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id="app">
+		<ul>
+			<button v-on:click='click()' style='width:400px; height:30px;'>Кто нажмёт, тот (оставлю это на ваше воображение)</button>
+			<li v-for="(item, index) in numbers">{{ item }}</li>
+		</ul>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data: {
+				numbers: [21, 2, 30, 4, 75, -10],
+			},
+			methods:{
+				click: function(){
+					this.numbers = this.numbers.filter(function(elem){return elem >= 0 && elem <= 10});
+				}
+			},
+		});
+	</script>
+</body>
+</html>

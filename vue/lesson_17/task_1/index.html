@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id='app'>
+		<a href='a' v-on:click.prevent="click('Нажал на ссылку, вот это фокус!')">NadoeloUje</a> 
+		<p>{{ text }}</p>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data:{
+				text: 'left',
+			},
+			methods:{
+				click: function(mess){
+					this.text = mess;
+				},
+			}
+		});
+	</script>
+</body>
+</html>

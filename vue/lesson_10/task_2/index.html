@@ -1,0 +1,35 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id="app">
+		<div><textarea v-model='message'></textarea></div>
+		<div><button style='width:150px;height:30px;' v-on:click='click()'>Click me</button></div>
+		<ul>
+			<li v-for='i in items'>{{ i }}</li>
+		</ul>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data: {
+				message: 'hello happy world happy lucky smile',
+				items: [],
+			},
+			methods:
+			{
+				click: function()
+				{
+					let words = this.message.split(' ');
+					for (let i of words){
+						this.items.push(i);
+					}
+				},
+			},
+		});
+	</script>
+</body>
+</html>

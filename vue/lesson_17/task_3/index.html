@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id='app'>
+		<input type='text'>
+		<p v-once v-on:click="click()">{{ text }}</p>
+		<p>{{ text }}</p>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data:{
+				text: 'Нажми меня, я сверху',
+			},
+			methods:{
+				click: function(){
+					this.text = document.querySelector('input[type=text]').value;
+					console.log(this.text);
+				},
+			}
+		});
+	</script>
+</body>
+</html>

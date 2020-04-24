@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id="app">
+		<ul>
+			<p v-if='age <= 18'>подросток</p>
+			<p v-if='age <= 25 && age >= 19'>молодой человек</p>
+			<p v-if='age >= 26'>мужчина</p>
+		</ul>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data: {
+				age: 25,
+			},
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id="app">
+		<ul>
+			<li v-for="(item, index) in numbers" v-on:click='click(index, item)'>{{ item }}</li>
+		</ul>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data: {
+				numbers: [21, 2, 30, 4, 75, -10],
+			},
+			methods:{
+				click: function(index, value){
+					this.numbers.splice(index, 1);
+					this.numbers.splice(index, 0, value*value);
+				}
+			},
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>vue</title>
+    <meta charset="utf-8">
+</head>
+<body>
+	<div id='app'>
+		<input type='checkbox' v-on:click='click()'>
+		<p v-bind:style="{color: col}">Абзац</p>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+		let app = new Vue({
+			el: '#app',
+			data: {
+				col: 'black',
+			},
+			methods:{
+				click: function()
+				{
+					this.col = document.querySelector('input[type=checkbox]').checked ? 'red' : 'black';
+				}
+			},
+		});
+	</script>
+</body>
+</html>
