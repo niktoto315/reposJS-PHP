@@ -1,0 +1,12 @@
+#canvas{
+	width: 70%;
+	height: 95%;
+	border: 5px solid black;
+	float: left;
+}
+#form1{
+	background-color: white;
+	margin-left: 72%;
+	width: 20%;
+	height: 95%;
+}
