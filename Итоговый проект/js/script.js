@@ -13,8 +13,8 @@ var timer = setInterval(function(){
 	if(count_ball >= 50 && document.querySelector('#p2') == null)No_Bugs_This_Feature();
 	if(count_ball >= 100 && document.querySelector('#but1') == null)Button_Random_Ball();
 	if(count_ball >= 200 && document.querySelector('#div1') == null)Button_Custom_Ball();
-	document.querySelector('#but1').disabled = count_ball < 100 && document.querySelector('#but1') != null ? true : false;
-	document.querySelector('#but2').disabled = count_ball < 200 && document.querySelector('#but2') != null ? true : false;
+	if(document.querySelector('#but1') != null)document.querySelector('#but1').disabled = count_ball < 100 && document.querySelector('#but1') != null ? true : false;
+	if(document.querySelector('#but2') != null)document.querySelector('#but2').disabled = count_ball < 200 && document.querySelector('#but2') != null ? true : false;
 }, 500);
 
 var draw_timer = setInterval(function(){
