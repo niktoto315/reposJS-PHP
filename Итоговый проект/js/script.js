@@ -6,16 +6,16 @@ let count_ball = 0;
 let balls = [];
 
 var timer = setInterval(function(){
+	count_ball++;
+	out_count.innerHTML = out_count.innerHTML.replace(/\d+/g, count_ball);
 	if(balls.length < 100)CreateBall(c);
-	if(count_ball == 10)Full_Edition();
-	if(count_ball == 50)No_Bugs_This_Feature();
-	if(count_ball == 100)Button_Random_Ball();
-		count_ball++;
-		out_count.innerHTML = out_count.innerHTML.replace(/\d+/g, count_ball);
-	if(count_ball < 100 && document.querySelector('input[type]') != null)document.querySelector('#form1').removeChild(document.querySelector('input[type]'));
-	if(count_ball < 10 && document.querySelector('#p1') != null)document.querySelector('#form1').removeChild(document.querySelector('#p1'));
-	if(count_ball < 50 && document.querySelector('#p2') != null)document.querySelector('#form1').removeChild(document.querySelector('#p2'));
-}, 1000);
+	if(count_ball >= 10 && document.querySelector('#p1') == null)Full_Edition();
+	if(count_ball >= 50 && document.querySelector('#p2') == null)No_Bugs_This_Feature();
+	if(count_ball >= 100 && document.querySelector('#but1') == null)Button_Random_Ball();
+	if(count_ball >= 200 && document.querySelector('#div1') == null)Button_Custom_Ball();
+	document.querySelector('#but1').disabled = count_ball < 100 && document.querySelector('#but1') != null ? true : false;
+	document.querySelector('#but2').disabled = count_ball < 200 && document.querySelector('#but2') != null ? true : false;
+}, 500);
 
 var draw_timer = setInterval(function(){
 	drawBackground(c);
@@ -47,29 +47,100 @@ function No_Bugs_This_Feature(){
 
 function Button_Random_Ball(){
 	let but = document.createElement('input');
+	but.setAttribute('id', 'but1');
 	but.type = 'button';
 	but.value = 'Создать рандомный шарик';
 	but.addEventListener('click', function(){
 		let coords = Random_Coords();
-		var user_ball = new Ball(coords[0], coords[1], RandomInt(15, 60), RandomInt(0, 3), 10, 'red');
+		var user_ball = new Ball(coords[0], coords[1], 15, RandomInt(0, 3), 10, 'red');
+		switch(RandomInt(0, 2)){
+			case 0: user_ball.setOptions('radius', 15); break;
+			case 1: user_ball.setOptions('radius', 30); break;
+			case 2: user_ball.setOptions('radius', 60); break;
+		}
 		switch(user_ball.getOptions('radius')){
 			case 15: user_ball.setOptions('step', 10); break;
 			case 30: user_ball.setOptions('step', 8); break;
 			case 60: user_ball.setOptions('step', 6); break;
 		}
 		balls.push(user_ball);
-		count_ball -= 100;
+		if(count_ball > 100)count_ball -= 100;
 	});
 	document.querySelector('#form1').appendChild(but);
 }
 
+function Button_Custom_Ball(){
+	let div = document.createElement('div');
+	div.setAttribute('id', 'div1');
+	document.querySelector('#form1').appendChild(div);
+	
+	let sel = document.createElement('select');
+	sel.setAttribute('id', 'x');
+	document.querySelector('#form1').appendChild(sel);
+	for(let i=80; i<can.width-80; i++){
+		let opt = document.createElement('option');
+		opt.innerHTML += i;
+		document.querySelector('#x').appendChild(opt);
+	}
+	
+	sel = document.createElement('select');
+	sel.setAttribute('id', 'y');
+	document.querySelector('#form1').appendChild(sel);
+	for(let i=80; i<can.height-80; i++){
+		
+		let opt = document.createElement('option');
+		opt.innerHTML += i;
+		document.querySelector('#y').appendChild(opt);
+	}
+	
+	sel = document.createElement('select');
+	sel.setAttribute('id', 'radius');
+	document.querySelector('#form1').appendChild(sel);
+	for(let i=15; i<80; i*=2){
+		
+		let opt = document.createElement('option');
+		opt.innerHTML += i;
+		document.querySelector('#radius').appendChild(opt);
+	}
+	
+	sel = document.createElement('select');
+	sel.setAttribute('id', 'dir');
+	document.querySelector('#form1').appendChild(sel);
+	for(let i=0; i<8; i++){
+		
+		let opt = document.createElement('option');
+		opt.innerHTML += i;
+		document.querySelector('#dir').appendChild(opt);
+	}
+	
+	let but = document.createElement('input');
+	but.id = 'but2';
+	but.type = 'button';
+	but.value = 'Создать шар';
+	but.addEventListener('click', function(){
+		let arr = [	+document.querySelector('#x')[document.querySelector('#x').selectedIndex].innerHTML,
+					+document.querySelector('#y')[document.querySelector('#y').selectedIndex].innerHTML,
+					+document.querySelector('#radius')[document.querySelector('#radius').selectedIndex].innerHTML,
+					+document.querySelector('#dir')[document.querySelector('#dir').selectedIndex].innerHTML];
+		var user_ball = new Ball(arr[0], arr[1], arr[2], arr[3], 10, 'yellow');
+		switch(user_ball.getOptions('radius')){
+			case 15: user_ball.setOptions('step', 10); break;
+			case 30: user_ball.setOptions('step', 8); break;
+			case 60: user_ball.setOptions('step', 6); break;
+		}
+		balls.push(user_ball);
+		if(count_ball > 200)count_ball -= 200;
+	});
+	document.querySelector('#div1').appendChild(but);
+}
+
 function Random_Coords(){
-	let x = RandomInt(10, can.width-10);
-	let y = RandomInt(10, can.width-10);
+	let x = RandomInt(100, can.width-100);
+	let y = RandomInt(100, can.width-100);
 	for(let bal of balls){
 		while(x == bal.getOptions('x') && y == bal.getOptions('y')){
-			x = RandomInt(10, can.width-10);
-			y = RandomInt(10, can.width-10);
+			x = RandomInt(100, can.width-100);
+			y = RandomInt(100, can.width-100);
 		}
 	}
 	return [x, y];
@@ -79,16 +150,23 @@ function Random_Coords(){
 
 // ===================== Нажатие на шар =========================
 
-can.addEventListener('click', function(e){
-	console.log(e.offsetX, e.offsetY);					
+can.addEventListener('click', function(e){				
 	for(let bal in balls){	
 		if(CheckMouse(e.offsetX, e.offsetY, balls[bal])){
 			switch(balls[bal].getOptions('color')){
-				case 'white': balls.splice(bal, 1); break; 
+				case 'white': 
+					balls.splice(bal, 1); 
+					count_ball += RandomInt(0, 30);
+				break; 
+				case 'yellow': 
+					count_ball += RandomInt(50, 60);
+					balls[bal].setOptions('dir', RandomInt(0, 7));
+				break; 
 				case 'red': 
 					if(balls[bal].getOptions('radius') <= 15)balls.splice(bal, 1);
 					else balls[bal].setOptions('radius', balls[bal].getOptions('radius')/2); 
 					balls[bal].setOptions('dir', RandomInt(0, 7));
+					balls[bal].setOptions('step', balls[bal].getOptions('step')+2); 
 				break; 
 			}
 			break;
@@ -99,7 +177,12 @@ can.addEventListener('click', function(e){
 // ========================= создание ===========================
 
 function CreateBall(){
-	var ball = new Ball(RandomInt(10, can.width-10), RandomInt(10, can.height-10), RandomInt(15, 60), RandomInt(0, 7), 10, 'white');
+	var ball = new Ball(RandomInt(100, can.width-100), RandomInt(100, can.height-100), 15, RandomInt(0, 7), 10, 'white');
+	switch(RandomInt(0, 2)){
+		case 0: ball.setOptions('radius', 15); break;
+		case 1: ball.setOptions('radius', 30); break;
+		case 2: ball.setOptions('radius', 60); break;
+	}
 	balls.push(ball);
 }
 
@@ -174,17 +257,6 @@ function moveBall(){
 	}
 }
 
-// -------------------- удаление вне границ ------------------------------
-
-function CheckBallAbroad(b){
-	return b.getOptions('x') > can.width || b.getOptions('y') > can.height || 
-	b.getOptions('x') < 0 || b.getOptions('y') < 0;
-}
-
-function DeleteBallAbroad(b){
-	if(CheckBallAbroad(b))balls.splice(b, 1);
-}
-
 // -------------------- столкновение друг с другом ----------------------
 
 function CheckCollBall(){
@@ -194,7 +266,12 @@ function CheckCollBall(){
 							balls[jbal].getOptions('x'), balls[jbal].getOptions('y'), balls[jbal].getOptions('radius')) && ibal != jbal)
 				{
 					let big, small;
-					if(balls[ibal].getOptions('radius') < balls[jbal].getOptions('radius')){
+					if(balls[ibal].getOptions('radius') == balls[jbal].getOptions('radius')){
+						balls.splice(ibal, 1);
+						balls.splice(jbal, 1);
+						break;
+					}
+					else if(balls[ibal].getOptions('radius') < balls[jbal].getOptions('radius')){
 						big = jbal;
 						small = ibal;
 					}
