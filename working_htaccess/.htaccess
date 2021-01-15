@@ -1,1 +1,52 @@
+RewriteEngine On
+RewriteBase /
 
+#task 1
+# Redirect /working_htaccess/index1.php /working_htaccess/test.php
+#task 3
+# Redirect /working_htaccess/index1.php https://youtu.be/EBjPj0-yBtM
+#task 5 
+# RewriteRule dir1/ working_htaccess/test.php
+# RewriteRule dir2/ working_htaccess/index1.php
+#task 7
+# RewriteRule (.+)\.php working_htaccess/index1.php
+#task 9
+# RewriteRule (.+)\.html working_htaccess/$1.php
+#task 11
+# RedirectMatch /index([1-3])\.php /working_htaccess/$1.php
+#task 13
+# RedirectMatch /(.+)?(dir)(.+)?/ /working_htaccess/index1.php
+#task 15
+# RedirectMatch /test([0-9]).php /working_htaccess/index1.php
+#task 17
+# RedirectMatch /([0-9]+)/ /working_htaccess/index1.php
+#task 19
+# RewriteRule !(.+)\.html working_htaccess/index1.php
+#task 21
+# RewriteCond %{REQUEST_URI} \.html$
+# RewriteRule .+ working_htaccess/index1.php
+#task 23
+# RewriteCond %{REQUEST_URI} \.html$
+# RewriteCond %{REQUEST_URI} ^/content/
+# RewriteRule .+ working_htaccess/index1.php
+#task 25
+# RewriteCond %{REQUEST_URI} \.css$ [OR]
+# RewriteCond %{REQUEST_URI} ^/styles/
+# RewriteRule .+ working_htaccess/index1.php
+#task 27
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteRule .+ working_htaccess/index1.php
+#task 29
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule .+ working_htaccess/index1.php
+#task 31
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule .+ working_htaccess/index1.php
+#task 33
+# RewriteCond %{REQUEST_URI} !^/working_htaccess/index1\.php$
+# RewriteRule (.+) working_htaccess/index1.php?get=$1 
+#task 35
+# RewriteRule test.php working_htaccess/index1.php?get=1 [NC]
+#task 37
+deny from all
